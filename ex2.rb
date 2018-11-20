@@ -236,21 +236,131 @@ class Zombie
     end
 end
 
-puts Zombie.all.inspect # []
-Zombie.new_day
-puts Zombie.all.inspect # [#<Zombie:0x005626ecc5ebd0 @speed=4, @strength=0>, #<Zombie:0x005626ecc5eba8 @speed=0, @strength=4>, #<Zombie:0x005626ecc5eb80 @speed=4, @strength=4>]
-zombie1 = Zombie.all[0]
-zombie2 = Zombie.all[1]
-zombie3 = Zombie.all[2]
-puts zombie1.encounter # You are now a zombie
-puts zombie2.encounter # You died
-puts zombie3.encounter # You died
-Zombie.new_day
-puts Zombie.all.inspect # [#<Zombie:0x005626ecc5e1f8 @speed=0, @strength=0>, #<Zombie:0x005626ecc5e180 @speed=3, @strength=3>, #<Zombie:0x005626ecc5e158 @speed=1, @strength=2>, #<Zombie:0x005626ecc5e090 @speed=0, @strength=4>]
-zombie1 = Zombie.all[0]
-zombie2 = Zombie.all[1]
-zombie3 = Zombie.all[2]
-puts zombie1.encounter # You got away
-puts zombie2.encounter # You are now a zombie
-puts zombie3.encounter # You died
+# puts Zombie.all.inspect # []
+# Zombie.new_day
+# puts Zombie.all.inspect # [#<Zombie:0x005626ecc5ebd0 @speed=4, @strength=0>, #<Zombie:0x005626ecc5eba8 @speed=0, @strength=4>, #<Zombie:0x005626ecc5eb80 @speed=4, @strength=4>]
+# zombie1 = Zombie.all[0]
+# zombie2 = Zombie.all[1]
+# zombie3 = Zombie.all[2]
+# puts zombie1.encounter # You are now a zombie
+# puts zombie2.encounter # You died
+# puts zombie3.encounter # You died
+# Zombie.new_day
+# puts Zombie.all.inspect # [#<Zombie:0x005626ecc5e1f8 @speed=0, @strength=0>, #<Zombie:0x005626ecc5e180 @speed=3, @strength=3>, #<Zombie:0x005626ecc5e158 @speed=1, @strength=2>, #<Zombie:0x005626ecc5e090 @speed=0, @strength=4>]
+# zombie1 = Zombie.all[0]
+# zombie2 = Zombie.all[1]
+# zombie3 = Zombie.all[2]
+# puts zombie1.encounter # You got away
+# puts zombie2.encounter # You are now a zombie
+# puts zombie3.encounter # You died
+
+# ------------------------------------------
+
+class Vampire
+
+    @@coven = []
+
+    def self.coven
+        return @@coven
+    end
+
+
+    def self.create(name, age)
+        vampire = Vampire.new(name, age)
+        @@coven.push(vampire)
+        return vampire
+    end
+
+    def self.sunrise
+        counter = 0
+        while counter < @@coven.length
+            if (@@coven[counter].drank_blood_today == false)
+                @@coven.delete_at(counter)
+            end
+            if (@@coven[counter].in_coffin == false)
+                @@coven.delete_at(counter)
+            end
+            counter += 1
+        end
+        return @@coven
+    end
+
+    def self.sunset
+        for vampire in @@coven
+            vampire.drank_blood_today = false
+            vampire.in_coffin = false
+        end
+    end
+
+# instance variables
+
+    def initialize(name, age)
+        @name = name
+        @age = age
+        @in_coffin = true
+        @drank_blood_today = false
+    end
+
+#read
+
+    def name
+        return @name
+    end
+
+    def age
+        return @age
+    end
+
+    def in_coffin
+        return @in_coffin
+    end
+
+    def drank_blood_today
+        return @drank_blood_today
+    end
+
+# write
+
+    def in_coffin=(bool)
+        @in_coffin = bool
+    end
+
+    def drank_blood_today=(bool)
+        @drank_blood_today = bool
+    end
+
+    def drink_blood
+        @drank_blood_today = true
+    end
+
+    def go_home
+        @in_coffin = true
+    end
+end
+
+carmilla = Vampire.create("Carmilla", 24)
+vlad = Vampire.create("Vlad", 40)
+dracula = Vampire.create("Dracula", 59)
+puts "Coven: #{Vampire.coven.inspect}"
+puts "\n"
+
+Vampire.sunset
+
+puts "#{carmilla.name}, #{carmilla.age}, #{carmilla.in_coffin}, #{carmilla.drank_blood_today}"
+puts "#{dracula.name}, #{dracula.age}, #{dracula.in_coffin}, #{dracula.drank_blood_today}"
+
+carmilla.drink_blood
+carmilla.go_home
+dracula.drink_blood
+vlad.go_home
+puts "\n"
+
+puts "--- vampires at sunrise:"
+puts "#{carmilla.name}, #{carmilla.age}, #{carmilla.in_coffin}, #{carmilla.drank_blood_today}"
+puts "#{dracula.name}, #{dracula.age}, #{dracula.in_coffin}, #{dracula.drank_blood_today}"
+puts "\n"
+
+
+Vampire.sunrise
+puts "Vampires who survived the day: #{Vampire.coven.inspect}"
 
