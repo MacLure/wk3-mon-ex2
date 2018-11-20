@@ -78,6 +78,7 @@ class Book
     end
 
     def self.current_due_date
+        return Time.now + 604800
     end
 
     def self.overdue_books
@@ -264,6 +265,15 @@ class Vampire
         return @@coven
     end
 
+    def self.coven_names
+        output = []
+        for vampire in @@coven
+            output << vampire.name
+        end
+        return output
+    end
+
+
 
     def self.create(name, age)
         vampire = Vampire.new(name, age)
@@ -272,15 +282,15 @@ class Vampire
     end
 
     def self.sunrise
-        counter = 0
-        while counter < @@coven.length
+        counter = @@coven.length-1
+        while counter >= 0
             if (@@coven[counter].drank_blood_today == false)
                 @@coven.delete_at(counter)
             end
             if (@@coven[counter].in_coffin == false)
                 @@coven.delete_at(counter)
             end
-            counter += 1
+            counter -= 1
         end
         return @@coven
     end
@@ -362,5 +372,8 @@ puts "\n"
 
 
 Vampire.sunrise
-puts "Vampires who survived the day: #{Vampire.coven.inspect}"
+puts "Vampires who survived the day: #{Vampire.coven_names}"
+
+
+
 
